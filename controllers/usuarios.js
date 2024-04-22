@@ -1,8 +1,10 @@
 const { response } = require('express');
-const { db } = require('../firebase/firebaseConfig');
+// const { db } = require('../firebase/firebaseConfig');
+const { getDb } = require('../firebase/firebaseConfig');
 
 const usuariosGet = async(req, res =  response) => {
     try {
+      const db = await getDb();
       const snapshot = await db.collection('usuarios').get();
       const usuarios = snapshot.docs.map(doc => doc.data());
       res.json({
@@ -21,37 +23,16 @@ const usuariosGet = async(req, res =  response) => {
     
   }
 
-const getSolicitudes = () => {
-
-}
 
 
-  const usuariosPost = (req, res =  response) => {
-    const { nombre, edad } = req.body;
 
-    res.json({
-        ok: true,
-        msg: 'Esta es una peticion POST - Controlador',
-        nombre,
-        edad
-    });
-  }
 
-  const usuariosPut = (req, res =  response) => {
-    const { id } = req.params;
-    res.json({
-        ok: true,
-        msg: 'Esta es una peticion PUT - Controlador',
-        id
-    });
-  }
+
+
 
 
   module.exports = {
-    usuariosGet,
-    usuariosPost,
-    usuariosPut,
-    getSolicitudes
+    usuariosGet
   }
 
 
