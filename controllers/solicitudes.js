@@ -48,7 +48,7 @@ const getSolicitudesPorusuario = async(req, res =  response) => {
         
 }
 
-const getSolicitudesPorUsuarioYStatus = async(req, res) => {
+const getSolicitudesPorUsuarioYStatus = async(req, res = response) => {
     const usuarioId = req.params.usuarioId;
     const status = parseInt(req.params.status);
     console.log(usuarioId)
@@ -78,6 +78,30 @@ const getSolicitudesPorUsuarioYStatus = async(req, res) => {
     }
 };
 
+const actualizarEstatusSolicitud = async(req, res = response) => {
+        const solicitudId = req.params.solicitudId;
+        const nuevoEstado = req.body.actualizarEstado;
+        try {
+            const db = await getDb();
+
+            await db.collection('solicitudes').doc(solicitudId)
+            .update({
+                status: nuevoEstado
+            });
+
+            res.json({
+                ok: true,
+                msg: 'Estado de la solicitud actualizado exitosamente'
+            })
+        } catch (error) {
+            console.log('Error actualizando el estado de la solicitud',error);
+            res.status(500).json({
+                ok: false,
+                msg: 'Error al actualizar el estado de la solicitud'
+            })
+        };       
+}
+
 
 
  
@@ -86,7 +110,8 @@ const getSolicitudesPorUsuarioYStatus = async(req, res) => {
   module.exports = {
     getSolicitudes,
     getSolicitudesPorusuario,
-    getSolicitudesPorUsuarioYStatus
+    getSolicitudesPorUsuarioYStatus,
+    actualizarEstatusSolicitud
   }
 
 
