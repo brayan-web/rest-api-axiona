@@ -1,10 +1,12 @@
 const { response } = require('express');
-const { db } = require('../firebase/firebaseConfig');
+// const { db } = require('../firebase/firebaseConfig');
+const { getDb } = require('../firebase/firebaseConfig');
 
 
 
 const getSolicitudes = async(req, res = response) => {
     try {
+        const db = await getDb();
         const solicitudesSnapshot = await db.collection('solicitudes').get();
         const solicitudes = solicitudesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data()}));
         res.json({
@@ -25,6 +27,7 @@ const getSolicitudes = async(req, res = response) => {
 const getSolicitudesPorusuario = async(req, res =  response) => {
         const usuarioId =  req.params.usuarioId;
         try {
+            const db = await getDb();
             const solicitudesSnapshot = await db.collection('solicitudes')
             .where('creator.uid', '==', usuarioId).get();
 
@@ -47,11 +50,14 @@ const getSolicitudesPorusuario = async(req, res =  response) => {
 
 const getSolicitudesPorUsuarioYStatus = async(req, res) => {
     const usuarioId = req.params.usuarioId;
-    const status = req.params.status;
-
+    const status = parseInt(req.params.status);
+    console.log(usuarioId)
+    console.log(status)
     try {
+        const db = await getDb();
+
         const solicitudesSnapshot = await db.collection('solicitudes')
-            .where('usuarioId', '==', usuarioId)
+            .where('creator.uid', '==', usuarioId)
             .where('status', '==', status)
             .get();
 
