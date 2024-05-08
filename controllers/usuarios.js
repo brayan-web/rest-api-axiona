@@ -6,7 +6,14 @@ const usuariosGet = async(req, res =  response) => {
     try {
       const db = await getDb();
       const snapshot = await db.collection('usuarios').get();
-      const usuarios = snapshot.docs.map(doc => doc.data());
+      const usuarios = snapshot.docs.map(doc => {
+          const uid = doc.id;
+          const data = doc.data();
+
+          return { uid, ...data }
+      });
+
+
       res.json({
         ok: true,
         msg: 'Lista de usuarios obtenida correctamente',
